@@ -1,0 +1,41 @@
+/*Mão na massa: duração média de estadias*/
+
+/*No contexto do gerenciamento de uma plataforma de hospedagem, analisar e entender as preferências 
+e comportamentos dos clientes é crucial para otimizar a oferta e a qualidade das hospedagens. 
+Uma métrica importante nesse cenário é o cálculo da duração média das estadias,que pode ajudar 
+a identificar tendências de mercado e ajustar as estratégias de negócios.*/
+
+/*Desafio: Como parte da equipe de análise de dados de uma plataforma online de aluguel por 
+temporada, você é a pessoa encarregada de desenvolver uma funcionalidade que calcule a duração 
+média das estadias realizadas pelos clientes. Essa métrica é fundamental para entender se os 
+clientes preferem estadias curtas ou longas e planejar a disponibilidade de hospedagem de 
+acordo.
+
+Crie uma função chamada CalculaDuracaoMediaEstadias que retorna a duração média de todas as 
+estadias registradas no banco de dados, arredondada para o número inteiro mais próximo.
+
+Observação: A função deve calcular a média de dias entre as datas de início e fim de cada 
+aluguel registradas na tabela aluguéis.*/
+
+
+DROP FUNCTION IF EXISTS CalculaDuracaoMediaEstadias;
+
+SELECT aluguel_id, ROUND(AVG(DATEDIFF(data_fim, data_inicio))) AS Dias FROM alugueis
+GROUP BY aluguel_id;
+
+DELIMITER $$
+
+CREATE FUNCTION CalculaDuracaoMediaEstadias()
+RETURNS INT DETERMINISTIC
+BEGIN
+	
+    DECLARE media_dias DECIMAL(10,2);
+
+    SELECT ROUND(AVG(DATEDIFF(data_fim, data_inicio))) INTO media_dias FROM alugueis;
+    
+	RETURN media_dias;
+    
+END$$
+DELIMITER ;
+
+SELECT CalculaDuracaoMediaEstadias();
